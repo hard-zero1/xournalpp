@@ -26,11 +26,11 @@ auto StylusInputHandler::handleImpl(InputEvent const& event) -> bool {
     if (event.type == BUTTON_PRESS_EVENT) {
 
         if (event.button == 1 || this->inputContext->getSettings()->getInputSystemTPCButtonEnabled()) {
-            this->nrOfIgnoredEvents = 3; // todo: Use settings entry
-            if (this->nrOfIgnoredEvents > 0) {
-                this->nrOfIgnoredEvents--;
+            this->eventsToIgnore = this->inputContext->getSettings()->getIgnoredStylusEvents();
+            if (this->eventsToIgnore > 0) {
+                this->eventsToIgnore--; // This is already the first ignored event
             } else {
-                this->nrOfIgnoredEvents = -1;
+                this->eventsToIgnore = -1;
                 this->actionStart(event);
             }
             return true;
@@ -55,12 +55,12 @@ auto StylusInputHandler::handleImpl(InputEvent const& event) -> bool {
     // Trigger motion action when pen/mouse is pressed and moved
     if (event.type == MOTION_EVENT)  // mouse or pen moved
     {
-        if (this->nrOfIgnoredEvents >= 0) {
-            if (this->nrOfIgnoredEvents == 0) {
-                this->nrOfIgnoredEvents = -1;
+        if (this->eventsToIgnore >= 0) {
+            if (this->eventsToIgnore == 0) {
+                this->eventsToIgnore = -1;
                 this->actionStart(event);
             } else {
-                this->nrOfIgnoredEvents--;
+                this->eventsToIgnore--;
             }
         } else {
             this->actionMotion(event);
@@ -127,7 +127,7 @@ void StylusInputHandler::setPressedState(InputEvent const& event) {
     {
         switch (event.button) {
             case 1:
-                if (!this->nrOfIgnoredEvents >= 0) {
+                if (!this->eventsToIgnore >= 0) {
                     this->deviceClassPressed = true;
                 }
                 break;

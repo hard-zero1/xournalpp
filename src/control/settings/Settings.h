@@ -370,6 +370,15 @@ public:
     string const& getPluginDisabled() const;
     void setPluginDisabled(const string& pluginDisabled);
 
+    /**
+     * Sets #numIgnoredStylusEvents. If given a negative value writes 0 instead.
+     */
+    void setIgnoredStylusEvents(int numEvents);
+    /**
+     * Returns #numIgnoredStylusEvents.
+     */
+    int getIgnoredStylusEvents() const;
+
     bool getExperimentalInputSystemEnabled() const;
     void setExperimentalInputSystemEnabled(bool systemEnabled);
 
@@ -820,6 +829,18 @@ private:
     bool strokeFilterEnabled{};
     bool doActionOnStrokeFiltered{};
     bool trySelectOnStrokeFiltered{};
+
+    /**
+     * How many stylus events since hitting the screen should be ignored before actually starting the action. If set to
+     * 0, no event will be ignored. Should not be negative.\n
+     * Explanation: With some setup, when the stylus is pressed on the screen, the accuracy and update rate of its
+     * recognized position increases. Because of the lower precision before, when hitting the screen the cursor
+     * might jump from its previous position to the more precise point (this is especially far if the pen tip was in
+     * rapid movement right before touching) while beeing recognized as writing. This can result in artifacts that e.g.
+     * make handwritten text very hard to read. To work around this, the first events since the triggering event can be
+     * ignored.
+     */
+    int numIgnoredStylusEvents{};
 
     /**
      * Whether the new experimental input system is activated
