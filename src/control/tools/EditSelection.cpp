@@ -755,7 +755,7 @@ void EditSelection::drawAnchorRect(cairo_t* cr, double x, double y, double zoom)
     cairo_rectangle(cr, x * zoom - (this->btnWidth / 2), y * zoom - (this->btnWidth / 2), this->btnWidth,
                     this->btnWidth);
     cairo_stroke_preserve(cr);
-    cairo_set_source_rgb(cr, 1, 1, 1);
+    cairo_set_source_rgba(cr, 1, 1, 1, 0.7);
     cairo_fill(cr);
 }
 
